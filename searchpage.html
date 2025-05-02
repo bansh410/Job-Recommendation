@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Search IT Jobs</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #cbd5e1, #e9d5ff, #fbcfe8);
+      color: #1f2937;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      text-align: center;
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+    p {
+      font-size: 1.2rem;
+      color: #4b5563;
+      margin-bottom: 30px;
+    }
+    .search-form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 40px;
+    }
+    .search-form input, .search-form button {
+      padding: 10px 15px;
+      font-size: 1rem;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+    }
+    .search-form input {
+      flex: 1 1 200px;
+    }
+    .search-form button {
+      background-color: #4f46e5;
+      color: white;
+      cursor: pointer;
+      border: none;
+    }
+    .job-card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    .job-card h2 {
+      margin: 0 0 8px;
+    }
+    .job-card .company {
+      color: #6b7280;
+      margin-bottom: 10px;
+    }
+    .job-card .location {
+      font-size: 0.9rem;
+      color: #9ca3af;
+    }
+    .apply-btn {
+      display: inline-block;
+      margin-top: 10px;
+      background-color: #6366f1;
+      color: white;
+      padding: 8px 14px;
+      border-radius: 8px;
+      text-decoration: none;
+    }
+    .apply-btn:hover {
+      background-color: #4f46e5;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Find Your Dream IT Job</h1>
+    <p>Search from thousands of tech opportunities</p>
+    <div class="search-form">
+      <input type="text" placeholder="Job title or keyword" id="job-title" />
+      <input type="text" placeholder="Location" id="job-location" />
+      <button type="button" onclick="searchJobs()">Search</button>
+    </div>
+    <div id="job-results"></div>
+  </div>
+
+  <script>
+    async function searchJobs() {
+      const title = document.getElementById('job-title').value;
+      const location = document.getElementById('job-location').value;
+
+      const res = await fetch(`/api/search?title=${encodeURIComponent(title)}&location=${encodeURIComponent(location)}`);
+      const jobs = await res.json();
+
+      const resultsContainer = document.getElementById('job-results');
+      resultsContainer.innerHTML = '';
+
+      if (jobs.length === 0) {
+        resultsContainer.innerHTML = '<p>No jobs found for your search.</p>';
+      } else {
+        jobs.forEach(job => {
+          const jobDiv = document.createElement('div');
+          jobDiv.className = 'job-card';
+          jobDiv.innerHTML = `
+            <h2>${job.title}</h2>
+            <div class="company">@${job.company}</div>
+            <div class="location">${job.location}</div>
+            <a href="https://www.linkedin.com/jobs/search/?keywords=Software%20Developer%20Yerevan%20Brandy%20Company
+" class="apply-btn">Apply Now</a>
+          `;
+          resultsContainer.appendChild(jobDiv);
+        });
+      }
+    }
+  </script>
+</body>
+</html>
